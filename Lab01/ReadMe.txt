@@ -1,0 +1,1 @@
+This folder is granted access to everyone, including postgresql
