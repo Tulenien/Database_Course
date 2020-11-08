@@ -1,32 +1,21 @@
--- Числа Фибоначчи (рекурсивно)
-drop function if EXISTS Fib;
 
-create function Fib (fvalue int, svalue int, n int)
-returns table (previos int, current int)
-as 
-$$
-begin
-    return query select fvalue, svalue;
-    if n > 0 then
-        return query
-        select *
-        from Fib(svalue, fvalue + svalue, n - 1);
-    end if;
-end
-$$;
-language plpgsql
+-- Получение значений иерархии locations рекурсивно
+-- drop function getValuesFromTree;
 
-select * from Fib(3, 5, 10);
-
-create or replace function getValuesFromTree(loc varchar)
+create or replace function getValuesFromTree(base varchar)
 returns setof locations
 as
 $$
 begin
+    return query 
+    select (getValuesFromTree(l.Loc_Name)).*
+    from locations l where l.Parent = base;
+
     return query
-            select l.parent, l.loc_name
-            from 
-end;
+    select loc.Loc_Name, loc.Parent
+    from locations loc
+    where loc.Parent = base;
+end
 $$ language plpgsql;
 
 select * from getValuesFromTree('Россия');
