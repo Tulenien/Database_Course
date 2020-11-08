@@ -24,4 +24,23 @@ begin
 end
 $$ language plpgsql;
 
+--drop PROCEDURE table_size();
+
 call table_size();
+
+-- no cursor defence task
+create or replace procedure table_size() as
+$$
+	declare r record;
+	begin
+	for r in
+	(
+		select table_name,
+		pg_relation_size(cast(table_name as varchar)) as size 
+		from information_schema.tables
+		where table_schema not in ('information_schema','pg_catalog')
+	) loop
+		raise notice '{table : %} {size : %}', r.table_name, r.size;
+	end loop;
+end
+$$ language plpgsql;
