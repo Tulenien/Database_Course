@@ -17,7 +17,7 @@ for owner in owners:
 if flag == 1:
     try:
         plan = plpy.prepare("insert into re_owner(ensurance_num, owner_name, age, gender) values($1, $2, $3, $4);", ["bignum", "varchar", "smallint", "varchar"])
-        plan = plpy.execute(plan, [person, null, null, null])
+        plpy.execute(plan, [person, null, null, null])
         plpy.notice("new owner added")
     except:
         plpy.notice("problems on adding new owner")
