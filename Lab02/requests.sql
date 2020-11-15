@@ -3,9 +3,10 @@ select
 	owner_name,
 	ownership_type_name
 from 
-	re_owner join re_ownership on re_owner.ensurance_num = re_ownership.ensurance_num
-join 
-	re_ownership_type on re_ownership.ownership_type_id = re_ownership_type.ownership_type_id
+	re_owner join re_ownership 
+	on re_owner.ensurance_num = re_ownership.ensurance_num
+	join re_ownership_type 
+	on re_ownership.ownership_type_id = re_ownership_type.ownership_type_id
 where 
 	age > 40;
 
