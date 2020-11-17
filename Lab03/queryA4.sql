@@ -1,4 +1,3 @@
-
 -- Получение значений иерархии locations рекурсивно
 -- drop function getValuesFromTree;
 
@@ -7,7 +6,7 @@ returns setof locations
 as
 $$
 begin
-    return query 
+    return query
     select (getValuesFromTree(l.Loc_Name)).*
     from locations l where l.Parent = base;
 
@@ -18,4 +17,4 @@ begin
 end
 $$ language plpgsql;
 
-select * from getValuesFromTree('Россия');
+select * from getValuesFromTree('Московская область');

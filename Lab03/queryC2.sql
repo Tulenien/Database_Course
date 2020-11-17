@@ -9,14 +9,14 @@ $$
 begin
 	update re_owner
 	set age = 0
-	where ensurance_num = old.ensurance_num ;
+	where ensurance_num = old.ensurance_num;
 	return old;
 end;
 $$ language plpgsql;
 
 create trigger DeletedFromOwners
 	instead of delete on owner_view
-	for each row 
+	for each row
 	execute procedure UpdateInsteadAgeZero()
 
 -- TODO: When smth is deleted from re_ownership -
