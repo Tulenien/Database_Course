@@ -13,6 +13,18 @@ create temp table import(doc json);
 copy import from 
 'C:\Users\timof\Documents\Programming\DataBases\LabsDB\Lab05\re_objCopy.json';
 
+create temp table import(doc json);
+copy import from 
+'C:\Users\timof\Documents\Programming\DataBases\LabsDB\Lab05\re_ownershipCopy.json';
+
+create temp table import(doc json);
+copy import from 
+'C:\Users\timof\Documents\Programming\DataBases\LabsDB\Lab05\re_ownerCopy.json';
+
+create temp table import(doc json);
+copy import from 
+'C:\Users\timof\Documents\Programming\DataBases\LabsDB\Lab05\re_ownership_typeCopy.json';
+
 select *
 into temp tbl
 from
