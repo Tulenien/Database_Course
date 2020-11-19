@@ -1,1 +1,6 @@
 .vscode/
+re_objCopy.json
+re_ownershipCopy.json
+re_ownerCopy.json
+re_ownership_typeCopy.json
+tableCols.json
