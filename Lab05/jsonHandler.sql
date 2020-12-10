@@ -54,7 +54,7 @@ from
 
 select
 	case 
-		when 'n' in 
+		when 'name' in 
         (
             -- Рекурсивный поиск всех ключей
             with recursive get_keys(key, value) as 
@@ -101,6 +101,7 @@ where id = 1;
 
 select info ->> 'rent' from tbl
 where info ->> 'name' = 'James';
+-- Удалить атрибут name в некоторых строках
 
 -- ***************************************************
 -- Разделить json документ на несколько строк по узлам

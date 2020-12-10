@@ -17,6 +17,14 @@ values('{"name":"James",    "surname":"Bond",       "rent":1000}'),
       ('{"name":"Ebenezer", "surname":"Scrooge",    "rent":20000}'),
       ('{"name":"Scrooge",  "surname":"McDuck",     "rent":19999}');
 
+insert into tenants(info)
+values('{"surname":"NoName",    "rent":1}'),
+      ('{"name":"NoSurname",    "rent":1}'),
+      ('{"name":"No",           "surname":"Rent"}');
+
+insert into tenants(info)
+values('{"rent":1}');
+
 select * from tenants;
-select info ->> 'surname' n, info ->> 'rent' rent
+select info ->> 'name' n, info ->> 'surname' surname
 from tenants;
