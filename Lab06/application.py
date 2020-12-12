@@ -94,6 +94,51 @@ def getFullInfoByCadNum(CadNum, cursor):
     except:
         return False
 
+#contains CTE and window functions
+def topFive(cursor):
+    """Through the use of CTE and window
+    functions find the persons with the most
+    valueble properties and take five of them
+
+    Args:
+        CadNum (int): PK for realty object
+        cursor (cursor): DB cursor to execute queries through
+        
+    Returns:
+        flag: Indicator of execution
+    """
+    try:
+        cursor.execute\
+        ('''
+            with toplist (person, val) as
+            (
+                select owner_name, sv
+                from
+                (
+                    select distinct rr.ensurance_num nm, sum(cad_value)
+                    over (partition by rr.ensurance_num) sv
+                    from re_ownership rp join re_obj rj
+                    on rp.cad_num = rj.cad_num join re_owner rr
+                    on rr.ensurance_num = rp.ensurance_num
+                    group by rr.ensurance_num, rj.cad_value
+                ) as query join re_owner
+                on re_owner.ensurance_num = nm
+                order by sv desc
+            )
+            select person, val
+            from toplist
+            limit 5
+            '''
+        )
+        result = cursor.fetchall()
+        print("Top five persons with the most valuable property:")
+        for i in range(5):
+            print(i + 1, result[i][0] + '\t', result[i][1])
+        print()
+        return True
+    except:
+        return False    
+
 if __name__ == "__main__":
     connect = connectToRE()
     if connect != None:
@@ -101,4 +146,6 @@ if __name__ == "__main__":
         # 824599521407922
         getPriceByCadNum(824599521407922, cursor)
         getFullInfoByCadNum(824599521407922, cursor)
+        topFive(cursor)
         normalExit(connect)
+
