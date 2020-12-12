@@ -44,7 +44,7 @@ def getPriceByCadNum(CadNum, cursor):
     try:
         cursor.execute("select cad_value from re_obj where cad_num = {}".format(CadNum))
         result = cursor.fetchall()
-        print(str(result[0]['cad_value']) + "\n")
+        print("Price is " + str(result[0]['cad_value']) + " rubbles\n")
         return True
     except:
         return False
@@ -74,9 +74,22 @@ def getFullInfoByCadNum(CadNum, cursor):
             where reo.cad_num = {}'''.format(CadNum)
         )
         result = cursor.fetchall()
-        #print(result[0])
-        num = result[1]['ownership_type_id']
-        print(type(num))
+        print("Owners info:")
+        for i in range(len(result)):
+            print(result[i][9], end = '\t')
+            print(result[i][11], end = '\t')
+            print(result[i][12], end = '\t')
+            print(result[i][10], end = '\n')
+        print()
+        print("Realty info:")
+        print(result[0][0], end = '\t')
+        print(result[0][3], end = '\t')
+        print("{:<6}".format(result[0][4]), end = '')
+        print("{:<11}".format(result[0][2]))
+        print(result[0][1], end = '\n\n')
+        print("Ownership info:")
+        print(result[0][14], end = '\t')
+        print(result[0][13], end = '\n\n')
         return True
     except:
         return False
