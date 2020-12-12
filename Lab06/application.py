@@ -94,7 +94,6 @@ def getFullInfoByCadNum(CadNum, cursor):
     except:
         return False
 
-#contains CTE and window functions
 def topFive(cursor):
     """Through the use of CTE and window
     functions find the persons with the most
@@ -139,6 +138,47 @@ def topFive(cursor):
     except:
         return False    
 
+def getTableInfo(tableName, cursor):
+    """Get information about table of tableName
+    from metadata and printed. If table does not exist it is
+    not displayed
+
+    Args:
+        tableName (string): Name of the table to be displayed
+        cursor (cursor): DB cursor to execute queries through
+
+    Returns:
+        flag: Indicator of execution
+    """
+    try:
+        cursor.execute\
+        (   '''
+            select
+            column_name,
+            data_type,
+            character_maximum_length,
+            numeric_precision
+            from information_schema.columns
+            where table_schema not in ('information_schema','pg_catalog')
+            and table_name = {}
+            '''.format(tableName)
+        )
+        result = cursor.fetchall()
+        if result == []:
+            print("Table does not exist in database\n")
+            return False
+        else:
+            print("Table {} info:".format(tableName))
+            for i in range(len(result)):
+                print("{:<28}".format(result[i]['column_name']), end = '')
+                print(result[i]['numeric_precision'], end = '\t')
+                print(result[i]['character_maximum_length'], end = '\t')
+                print(result[i]['data_type'])
+            return True
+    except:
+        return False
+
+
 if __name__ == "__main__":
     connect = connectToRE()
     if connect != None:
@@ -147,5 +187,7 @@ if __name__ == "__main__":
         getPriceByCadNum(824599521407922, cursor)
         getFullInfoByCadNum(824599521407922, cursor)
         topFive(cursor)
+        getTableInfo("'table'", cursor)
+
         normalExit(connect)
 
