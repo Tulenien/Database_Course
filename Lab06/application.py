@@ -391,6 +391,27 @@ def addRent(cadNum, tenant_id, paid, to_pay, connection, cursor):
         print("Error while iserting values to rent table\n")
         return False
 
+# Console interface
+def menu():
+    print('+' + '-' * 78 + '+')
+    print("|     {:<73}".format("Menu") + '|')
+    print('+' + '-' * 78 + '+')
+    print("| 0.  {:<73}".format("Exit") + '|')
+    print("| 1.  {:<73}".format("Scalar query") + '|')
+    print("| 2.  {:<73}".format("Multijoin query") + '|')
+    print("| 3.  {:<73}".format("CTE and window functions query") + '|')
+    print("| 4.  {:<73}".format("Metadata query") + '|')
+    print("| 5.  {:<73}".format("Scalar function call") + '|')
+    print("| 6.  {:<73}".format("Multioperator function call") + '|')
+    print("| 7.  {:<73}".format("Stored procedure call") + '|')
+    print("| 8.  {:<73}".format("System function call") + '|')
+    print("| 9.  {:<73}".format("Creete table on DB") + '|')
+    print("| 10. {:<73}".format("Insert into table") + '|')
+    print('+' + '-' * 78 + '+')
+    print("Choose an option: ")
+    option = int(input())
+    return False
+    
 if __name__ == "__main__":
     connect = connectToRE()
     if connect != None:
@@ -409,6 +430,9 @@ if __name__ == "__main__":
         # destructRentTable(connect, cursor)
         # 443315876273126 -- ownership_type_id = 1, one owner possible
         #addRent(443315876273126, 16, 100, 200, connect, cursor)
+        state = True
+        while(state):
+            state = menu()
 
         normalExit(connect, cursor)
 
