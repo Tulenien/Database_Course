@@ -295,6 +295,15 @@ def updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor):
         return False
 
 def getPostgresType(value, cursor):
+    """Get Postgres type of any value
+
+    Args:
+        value (any): value to evaluate type of
+        cursor (cursor): DB cursor to execute queries through
+
+    Returns:
+        flag: Indicator of execution
+    """
     try:
         cursor.execute\
         (
@@ -303,8 +312,11 @@ def getPostgresType(value, cursor):
             '''.format(value)
         )
         result = cursor.fetchone()
-        print(result)
+        print(result[0] + '\n')
         return True
+    except psycopg2.errors.SyntaxError:
+        print("Postgres can not recognise this data type,\ntry to use varchar\n")
+        return False
     except:
         return False
 
@@ -313,16 +325,16 @@ if __name__ == "__main__":
     connect = connectToRE()
     if connect != None:
         cursor = getCursor(connect)
-        # 824599521407922
-        getPriceByCadNum(824599521407922, cursor)
-        getFullInfoByCadNum(824599521407922, cursor)
-        topFive(cursor)
-        getTableInfo("'table'", cursor)
-        getMaxValue(cursor)
-        deleteMostExpensivePropertyByTypeName(
-        "'Индивидуальная собственность'", connect, cursor)
-        updatePriceForSquareMeter(5000, 100, 200, connect, cursor)
-        getPostgresType('1.0000', cursor)
+        # 824599521407922 is the cad_num of the first element of re_obj
+        # getPriceByCadNum(824599521407922, cursor)
+        # getFullInfoByCadNum(824599521407922, cursor)
+        # topFive(cursor)
+        # getTableInfo("'table'", cursor)
+        # getMaxValue(cursor)
+        # deleteMostExpensivePropertyByTypeName(
+        # "'Индивидуальная собственность'", connect, cursor)
+        # updatePriceForSquareMeter(5000, 100, 200, connect, cursor)
+        # getPostgresType('10.10', cursor)
 
         normalExit(connect, cursor)
 
