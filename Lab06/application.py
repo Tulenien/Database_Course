@@ -198,6 +198,25 @@ def getMaxValue(cursor):
     except:
         return False
 
+def deleteMostExpensivePropertyByTypeName(typeName, connection, cursor):
+    try:
+        cursor.execute\
+        (
+            '''
+            select * from DeleteMostExpensivePropertyByType
+            ({}) join owner_view
+            on ensurance_num = ensurance
+            '''.format(typeName)
+        )
+        result = cursor.fetchall()
+        print(result)
+        print("")
+        #change to commit() when ready to actually update table
+        connection.rollback()
+        return True
+    except:
+        return False
+
 if __name__ == "__main__":
     connect = connectToRE()
     if connect != None:
@@ -208,6 +227,9 @@ if __name__ == "__main__":
         topFive(cursor)
         getTableInfo("'table'", cursor)
         getMaxValue(cursor)
+        deleteMostExpensivePropertyByTypeName(
+        "'Индивидуальная собственность'", connect, cursor)
+
 
         normalExit(connect, cursor)
 
