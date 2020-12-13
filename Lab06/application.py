@@ -239,7 +239,41 @@ def deleteMostExpensivePropertyByTypeName(typeName, connection, cursor):
     except:
         return False
 
-
+def updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor):
+    try:
+        # Create a temp table
+        cursor.execute\
+        (
+            '''
+            select *
+            into temp obj
+            from re_obj
+            '''
+        )
+        connection.commit()
+        # Called a stored procedure
+        cursor.execute\
+        (
+            '''
+            call update_price({},{},{})
+            '''.format(newPrice, sqrL, sqrH)
+        )
+        connection.commit()
+        # Show changes
+        cursor.execute\
+        (
+            '''
+            select re_obj.cad_value as newValue, obj.cad_value as OldValue
+            from obj join re_obj on obj.cad_num = re_obj.cad_num
+            where obj.obj_square between {} and {}
+            order by obj.cad_value desc
+            '''.format(sqrL, sqrH)
+        )
+        result = cursor.fetchall()
+        print(result)
+        return True
+    except:
+        return False
 
 if __name__ == "__main__":
     connect = connectToRE()
@@ -253,7 +287,7 @@ if __name__ == "__main__":
         getMaxValue(cursor)
         deleteMostExpensivePropertyByTypeName(
         "'Индивидуальная собственность'", connect, cursor)
-
+        updatePriceForSquareMeter(5000, 100, 200, connect, cursor)
 
         normalExit(connect, cursor)
 
