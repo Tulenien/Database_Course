@@ -22,12 +22,14 @@ def getCursor(connection):
     cursor = connection.cursor(cursor_factory = psycopg2.extras.DictCursor)
     return cursor
 
-def errorExit(connection):
+def errorExit(connection, cursor):
     print("Error. Changes aborted. Close connection")
+    cursor.close()
     connection.rollback()
 
-def normalExit(connection):
+def normalExit(connection, cursor):
     print("Connection closed")
+    cursor.close()
     connection.close()
 
 def getPriceByCadNum(CadNum, cursor):
@@ -178,6 +180,23 @@ def getTableInfo(tableName, cursor):
     except:
         return False
 
+def getMaxValue(cursor):
+    """Finds the maximum value of
+    the property. Value is integer
+
+    Args:
+        cursor (cursor): DB cursor to execute queries through
+
+    Returns:
+        flag: Indicator of execution
+    """
+    try:
+        cursor.execute("select maxObjValue()")
+        result = cursor.fetchone()
+        print("The maximum price is " + str(result[0]) + '\n')
+        return True
+    except:
+        return False
 
 if __name__ == "__main__":
     connect = connectToRE()
@@ -188,6 +207,7 @@ if __name__ == "__main__":
         getFullInfoByCadNum(824599521407922, cursor)
         topFive(cursor)
         getTableInfo("'table'", cursor)
+        getMaxValue(cursor)
 
-        normalExit(connect)
+        normalExit(connect, cursor)
 
