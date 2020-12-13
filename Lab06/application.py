@@ -354,6 +354,43 @@ def destructRentTable(connection, cursor):
     except:
         return False
 
+def addRent(cadNum, tenant_id, paid, to_pay, connection, cursor):
+    try:
+        # Realty estate can not be rented if it has more than
+        # one owner
+        cursor.execute\
+        (
+            '''
+            select ownership_type_id
+            from re_ownership
+            where cad_num = {}
+            '''.format(cadNum)
+        )
+        result = cursor.fetchone()
+        if result[0] > 1:
+            print("This property can not be rented\n")
+            return False
+        else:
+            cursor.execute("select info->> 'name' from tenants where id = {}".format(tenant_id))
+            result = cursor.fetchone()
+            if result == None:
+                print("Tenant not found\n")
+                return False
+            else:
+                print("{} is now renting {}\nand charged for {}, instantly paid {}\n".format(result[0], cadNum, to_pay, paid))
+                cursor.execute\
+                (
+                    '''
+                    insert into rent(cad_num, tenant, to_pay, paid)
+                    values({},{},{},{})
+                    '''.format(cadNum, tenant_id, to_pay, paid)
+                )
+                connection.commit()
+                return True
+    except:
+        print("Error while iserting values to rent table\n")
+        return False
+
 if __name__ == "__main__":
     connect = connectToRE()
     if connect != None:
@@ -369,6 +406,9 @@ if __name__ == "__main__":
         # updatePriceForSquareMeter(5000, 100, 200, connect, cursor)
         # getPostgresType('10.10', cursor)
         # createRentTable(connect, cursor)
+        # destructRentTable(connect, cursor)
+        # 443315876273126 -- ownership_type_id = 1, one owner possible
+        #addRent(443315876273126, 16, 100, 200, connect, cursor)
 
         normalExit(connect, cursor)
 
