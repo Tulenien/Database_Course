@@ -1,6 +1,7 @@
 import psycopg2
 import psycopg2.extras
 
+# DB connect/exit funcs
 def connectToRE():
     try:
         connect = psycopg2.connect\
@@ -33,6 +34,7 @@ def normalExit(connection, cursor):
     cursor.close()
     connection.close()
 
+# Actions
 def getPriceByCadNum(CadNum, cursor):
     """Finds price of the realty in
     re_obj table of database.
@@ -320,6 +322,37 @@ def getPostgresType(value, cursor):
     except:
         return False
 
+# To include later 
+# https://www.legalzoom.com/articles/10-terms-to-include-in-your-rental-agreement
+def createRentTable(connection, cursor):
+    try:
+        cursor.execute\
+        (
+            '''
+            create table if not exists rent
+            (
+                id serial not null primary key,
+                cad_num bigint references re_obj(cad_num),
+                tenant serial references tenants(id),
+                to_pay real,
+                paid real
+            )
+            '''
+        )
+        connection.commit()
+        print("Table created\n")
+        return True
+    except:
+        return False
+
+def destructRentTable(connection, cursor):
+    try:
+        cursor.execute("drop table rent")
+        connection.commit()
+        print("Table dropped\n")
+        return True
+    except:
+        return False
 
 if __name__ == "__main__":
     connect = connectToRE()
@@ -335,6 +368,7 @@ if __name__ == "__main__":
         # "'Индивидуальная собственность'", connect, cursor)
         # updatePriceForSquareMeter(5000, 100, 200, connect, cursor)
         # getPostgresType('10.10', cursor)
+        # createRentTable(connect, cursor)
 
         normalExit(connect, cursor)
 
