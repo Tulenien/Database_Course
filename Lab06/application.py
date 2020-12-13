@@ -26,6 +26,7 @@ def errorExit(connection, cursor):
     print("Error. Changes aborted. Close connection")
     cursor.close()
     connection.rollback()
+    connection.close()
 
 def normalExit(connection, cursor):
     print("Connection closed")
@@ -288,9 +289,25 @@ def updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor):
         for i in range(len(result)):
             print("{:<12}".format(str(result[i][1])), end = '\t')
             print(result[i][0])
+        print()
         return True
     except:
         return False
+
+def getPostgresType(value, cursor):
+    try:
+        cursor.execute\
+        (
+            '''
+            select pg_typeof({})
+            '''.format(value)
+        )
+        result = cursor.fetchone()
+        print(result)
+        return True
+    except:
+        return False
+
 
 if __name__ == "__main__":
     connect = connectToRE()
@@ -305,6 +322,7 @@ if __name__ == "__main__":
         deleteMostExpensivePropertyByTypeName(
         "'Индивидуальная собственность'", connect, cursor)
         updatePriceForSquareMeter(5000, 100, 200, connect, cursor)
+        getPostgresType('1.0000', cursor)
 
         normalExit(connect, cursor)
 
