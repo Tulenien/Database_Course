@@ -199,6 +199,18 @@ def getMaxValue(cursor):
         return False
 
 def deleteMostExpensivePropertyByTypeName(typeName, connection, cursor):
+    """Delete owners of the most 
+    expensive property in chosen ownership type
+    and show it in the console.
+
+    Args:
+        typeName (str): Name of the ownership type
+        connection (DBconnection): Connection to commit or rollback changes
+        cursor (cursor): DB cursor to execute queries through
+
+    Returns:
+        flag: Indicator of execution
+    """
     try:
         cursor.execute\
         (
@@ -209,13 +221,25 @@ def deleteMostExpensivePropertyByTypeName(typeName, connection, cursor):
             '''.format(typeName)
         )
         result = cursor.fetchall()
-        print(result)
-        print("")
+        print("The owner of the most expensive property is\n{:<24}, {}".format(
+        result[0]['owner_name'], result[0]['ensurance_num']))
+        if result[0]['gender'] == 'муж.':
+            print("He", end = ' ')
+        else:
+            print("She", end = ' ')
+        print("owns " + str(len(result)) + " realty estates:")
+        print("{:<15}\t{}".format("Cadasty Number", "Price"))
+        for i in range(len(result)):
+            print(result[i][1], end = '\t')
+            print(result[i][2])
+        print()
         #change to commit() when ready to actually update table
         connection.rollback()
         return True
     except:
         return False
+
+
 
 if __name__ == "__main__":
     connect = connectToRE()
