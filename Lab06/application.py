@@ -240,6 +240,19 @@ def deleteMostExpensivePropertyByTypeName(typeName, connection, cursor):
         return False
 
 def updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor):
+    """Changes all values in range from sqrL to sqrH
+    to square * newPrice. Then show changes
+
+    Args:
+        newPrice (real): Price for one square meter
+        sqrL (int): Left border for square
+        sqrH (int): Right border for square
+        connection (DBconnection): Connection to commit or rollback changes
+        cursor (cursor): DB cursor to execute queries through
+
+    Returns:
+        flag: Indicator of execution
+    """
     try:
         # Create a temp table
         cursor.execute\
@@ -270,7 +283,11 @@ def updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor):
             '''.format(sqrL, sqrH)
         )
         result = cursor.fetchall()
-        print(result)
+        print("Changed {} values:".format(str(len(result))))
+        print("{:<12}\t{}".format("Old value","New value"))
+        for i in range(len(result)):
+            print("{:<12}".format(str(result[i][1])), end = '\t')
+            print(result[i][0])
         return True
     except:
         return False
