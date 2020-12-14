@@ -385,7 +385,8 @@ def addRent(cadNum, tenant_id, paid, to_pay, connection, cursor):
                     values({},{},{},{})
                     '''.format(cadNum, tenant_id, to_pay, paid)
                 )
-                connection.commit()
+                connection.rollback()
+                # connection.commit()
                 return True
     except:
         print("Error while iserting values to rent table\n")
@@ -418,7 +419,6 @@ def optionHandler(option, connection, cursor):
         #     errorExit(connect, cursor)
         #     return False
         return True
-# updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor)
 # getPostgresType(value, cursor)
     elif option == 4:
         tableName = input("Enter table name: ")
@@ -456,6 +456,50 @@ def optionHandler(option, connection, cursor):
             errorExit(connect, cursor)
             return False
         return True
+    elif option == 7:
+        newPrice = int(input("Enter new price for square meter: "))
+        sqrL = int(input("Enter square left  border of selected property: "))
+        sqrH = int(input("Enter square right border of selected property: "))
+        status = updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor)
+        if not status:
+            errorExit(connect, cursor)
+            return False
+        return True
+    elif option == 8:
+        print("Choose the type of your input:")
+        print("1 -- string")
+        print("2 -- integer")
+        print("3 -- float number")
+        chosen = int(input())
+        if chosen == 1:
+            value = input("Enter string value: ")
+        elif chosen == 2:
+            value = int(input("Enter integer value: "))
+        elif chosen == 3:
+            value = float(input("Enter float value: "))
+        else:
+            return True
+        status = getPostgresType(value, cursor)
+        if not status:
+            errorExit(connect, cursor)
+            return False
+        return True
+    elif option == 9:
+        status = createRentTable(connect, cursor)
+        if not status:
+            errorExit(connect, cursor)
+            return False
+        return True
+    elif option == 10:
+        cadNum = int(input("Enter cadastry number of the real-estate: "))
+        tenant_id = int(input("Enter tenant id number: "))
+        to_pay = float(input("Enter value of payment: "))
+        paid = float(input("Enter value of paid sum: "))
+        status = addRent(cadNum, tenant_id, paid, to_pay, connect, cursor)
+        if not status:
+            errorExit(connect, cursor)
+            return False
+        return True
 
 # Console interface
 def menu(connection, cursor):
@@ -482,6 +526,9 @@ if __name__ == "__main__":
     connect = connectToRE()
     if connect != None:
         cursor = getCursor(connect)
+        state = True
+        while(state):
+            state = menu(connect, cursor)
         # 824599521407922 is the cad_num of the first element of re_obj
         # getPriceByCadNum(824599521407922, cursor)
         # getFullInfoByCadNum(824599521407922, cursor)
@@ -495,8 +542,4 @@ if __name__ == "__main__":
         # createRentTable(connect, cursor)
         # destructRentTable(connect, cursor)
         # 443315876273126 -- ownership_type_id = 1, one owner possible
-        #addRent(443315876273126, 16, 100, 200, connect, cursor)
-        state = True
-        while(state):
-            state = menu(connect, cursor)
-
+        # addRent(443315876273126, 16, 100, 200, connect, cursor)
