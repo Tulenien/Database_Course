@@ -391,8 +391,74 @@ def addRent(cadNum, tenant_id, paid, to_pay, connection, cursor):
         print("Error while iserting values to rent table\n")
         return False
 
+def optionHandler(option, connection, cursor):
+    if option > 10:
+        print("Wrong option\n")
+        return True
+    elif not option:
+        normalExit(connect, cursor)
+        return False
+    elif option == 1:
+        cadNum = int(input("Enter cadastry number of the real-estate: "))
+        status = getPriceByCadNum(cadNum, cursor)
+        # if not status:
+        #     errorExit(connect, cursor)
+        #     return False
+        return True
+    elif option == 2:
+        cadNum = int(input("Enter cadastry number of the real-estate: "))
+        status = getFullInfoByCadNum(cadNum, cursor)
+        # if not status:
+        #     errorExit(connect, cursor)
+        #     return False
+        return True
+    elif option == 3:
+        status = topFive(cursor)
+        # if not status:
+        #     errorExit(connect, cursor)
+        #     return False
+        return True
+# updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor)
+# getPostgresType(value, cursor)
+    elif option == 4:
+        tableName = input("Enter table name: ")
+        tableName = "'{}'".format(tableName)
+        status = getTableInfo(tableName, cursor)
+        # if not status:
+        #     errorExit(connect, cursor)
+        #     return False
+        return True
+    elif option == 5:
+        state = getMaxValue(cursor)
+        # if not status:
+        #     errorExit(connect, cursor)
+        #     return False
+        return True
+    elif option == 6:
+        print("Choose the type of ownership:")
+        print("1 -- Индивидуальная собственность")
+        print("2 -- Долевая собственность")
+        print("3 -- Общая долевая собственность")
+        print("4 -- Общая совместная собственность")
+        chosen = int(input())
+        if chosen == 1:
+            typeName = "'Индивидуальная собственность'"
+        elif chosen == 2:
+            typeName = "'Долевая собственность'"
+        elif chosen == 3:
+            typeName = "'Общая долевая собственность'"
+        elif chosen == 4:
+            typeName = "'Общая совместная собственность'"
+        else:
+            return True
+        status = deleteMostExpensivePropertyByTypeName(typeName, connection, cursor)
+        if not status:
+            errorExit(connect, cursor)
+            return False
+        return True
+
 # Console interface
-def menu():
+def menu(connection, cursor):
     print('+' + '-' * 78 + '+')
     print("|     {:<73}".format("Menu") + '|')
     print('+' + '-' * 78 + '+')
@@ -410,7 +476,7 @@ def menu():
     print('+' + '-' * 78 + '+')
     print("Choose an option: ")
     option = int(input())
-    return False
+    return optionHandler(option, connection, cursor)
     
 if __name__ == "__main__":
     connect = connectToRE()
@@ -432,7 +498,5 @@ if __name__ == "__main__":
         #addRent(443315876273126, 16, 100, 200, connect, cursor)
         state = True
         while(state):
-            state = menu()
-
-        normalExit(connect, cursor)
+            state = menu(connect, cursor)
 
