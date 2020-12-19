@@ -266,7 +266,7 @@ def updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor):
             from re_obj
             '''
         )
-        connection.commit()
+        #connection.commit()
         # Called a stored procedure
         cursor.execute\
         (
@@ -308,9 +308,13 @@ def getPostgresType(value, cursor):
     """
     try:
         cursor.execute\
-        (
-            '''
-            select pg_typeof({})
+        # (
+        #     '''
+        #     select pg_typeof({})
+        #     '''.format(value)
+        # )
+        ('''
+        select pg_typof({})
             '''.format(value)
         )
         result = cursor.fetchone()
