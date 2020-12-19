@@ -70,7 +70,6 @@ def cameLast():
                     select row_number() over (partition by emp order by stime asc) rc, emp, stime, typ
                     from ctrl
                     where typ = 1
-        
                 ) asd join emps
                 on asd.emp = emps.id
                 where asd.rc = 1
