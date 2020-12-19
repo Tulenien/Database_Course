@@ -54,10 +54,11 @@ $$
     select min(age(birthday))
     from
     (
-        select row_number() over (partition by emps.id) as rn, fio, birthday
+        select row_number() over (partition by emps.id order by stime asc) as rn, birthday
         from emps join ctrl
-        on emps.id = ctrl.emp and ctrl.typ = 1 and stime - $1 > '00:10:00'
-    ) nest;
+        on emps.id = ctrl.emp and ctrl.typ = 1 and stime - '09:00:00' > '00:10:00'
+    ) nest
+    where rn = 1;
 $$ language sql;
 
 select * from getMinAgeLateFor10Mins('10:00:00');
