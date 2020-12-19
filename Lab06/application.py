@@ -308,13 +308,9 @@ def getPostgresType(value, cursor):
     """
     try:
         cursor.execute\
-        # (
-        #     '''
-        #     select pg_typeof({})
-        #     '''.format(value)
-        # )
-        ('''
-        select pg_typof({})
+        (
+            '''
+            select pg_typeof({})
             '''.format(value)
         )
         result = cursor.fetchone()
