@@ -16,7 +16,7 @@ while(True):
     root = ET.Element("root")
     for i in range(current_entry, current_entry + ENTRY_NUM):
         doc = ET.SubElement(root, "doc")
-        ET.SubElement(doc, "loc_num").text = "Город" + str(i)
+        ET.SubElement(doc, "loc_name").text = "Город" + str(i)
         ET.SubElement(doc, "parent").text = "Россия"
     current_entry += ENTRY_NUM
     tree = ET.ElementTree(root)
