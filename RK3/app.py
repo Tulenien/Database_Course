@@ -83,49 +83,8 @@ def cameLast():
     except:
         return False
 
-# Py-LINQ
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
-from py_linq import Enumerable
+# SQL Alchemy
 
-class Emps():
-    def __init__(self, id, fio, birthday, dep):
-        self.id = id
-        self.fio = fio
-        self.birthday = birthday
-        self.dep = dep
-
-class Ctrl():
-    def __init__(self, id, emp, sdate, week_day, stime, typ):
-        self.id = id
-        self.emp = emp
-        self.sdate = sdate
-        self.week_day = week_day
-        self.stime = stime
-        self.typ = typ
-
-def LambdaRealizationOldFinDep():
-    try:
-        engine = create_engine('postgresql+psycopg2://postgres:1&0O#_)"d@localhost/rk3', 
-        executemany_mode='batch')
-        connection = engine.connect()
-        employees = connection.execute("select * from emps")
-        controls = connection.execute("select * from ctrl")
-        emps = Enumerable()
-        ctrls = Enumerable()
-        for elem in employees:
-            emp = Emps(elem[0], elem[1], elem[2], elem[3])
-            emps.append(emp)
-        for elem in controls:
-            ctrl = Ctrl(elem[0], elem[1], elem[2], elem[3], elem[4], elem[5])
-            ctrls.append(emp)
-        # print(controls)
-        # print(employees)
-        oldest = emps.where(lambda x: x.dep == 'Бухгалтерия').order_by_descending(lambda x: x.birthday).select(lambda y: y.fio).last()
-        # exits = 
-        print("Oldest fin dep worker is {}".format(oldest))
-        return True
-    except:
-        return False
 
 def menu(connection, cursor):
     option = int(input())
@@ -160,11 +119,24 @@ def menu(connection, cursor):
             return False
         return state
     elif option == 4:
-        state = LambdaRealizationOldFinDep()
+        # state = 
         if not state:
             print("Smth went wrong")
             return False
         return state
+    elif option == 5:
+        # state = 
+        if not state:
+            print("Smth went wrong")
+            return False
+        return state
+    elif option == 6:
+        # state = 
+        if not state:
+            print("Smth went wrong")
+            return False
+        return state
+        
 
 
 if __name__ == '__main__':
@@ -177,5 +149,7 @@ if __name__ == '__main__':
             print("1 -- Olders fin dep employee")
             print("2 -- Employees who left > 3 times")
             print("3 -- Employee who came last today")
-            print("4 -- Olders fin dep employee lambda realization")
+            print("4 -- Olders fin dep employee orm realization")
+            print("5 -- Employees who left > 3 times orm realization")
+            print("6 -- Employee who came last today orm realization")
             state = menu(connect, cursor)
