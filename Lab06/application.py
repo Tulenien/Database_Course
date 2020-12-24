@@ -266,7 +266,7 @@ def updatePriceForSquareMeter(newPrice, sqrL, sqrH, connection, cursor):
             from re_obj
             '''
         )
-        connection.commit()
+        #connection.commit()
         # Called a stored procedure
         cursor.execute\
         (
