@@ -84,7 +84,8 @@ def cameLast():
         return False
 
 # SQL Alchemy
-
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Date, DateTime, Time, BigInteger
+from sqlalchemy.sql import func
 
 def menu(connection, cursor):
     option = int(input())
@@ -136,11 +137,33 @@ def menu(connection, cursor):
             print("Smth went wrong")
             return False
         return state
-        
-
 
 if __name__ == '__main__':
     connect = connectToRK()
+    # ORM setup part
+    engine = create_engine('postgresql+psycopg2://postgres:1&0O#_)"d@localhost/rk3', 
+    executemany_mode='batch')
+    conn = engine.raw_connection()
+    meta = MetaData()
+    ctrl = Table\
+    (
+        'ctrl',
+        meta, 
+        Column('emp', Integer), 
+        Column('sdate', Date),
+        Column('week_day', String),
+        Column('stime', Time),
+        Column('typ', Integer)
+    )
+    emps = Table\
+    (
+        'emps', 
+        meta, 
+        Column('id', Integer, primary_key = True), 
+        Column('fio', String),
+        Column('birthday', Date),
+        Column('dep', String) 
+    )
     if connect != None:
         cursor = getCursor(connect)
         state = True
