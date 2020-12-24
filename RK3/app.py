@@ -1,6 +1,7 @@
 import psycopg2
 import psycopg2.extras
 
+# Py-linq part
 def connectToRK():
     try:
         connect = psycopg2.connect\
@@ -84,12 +85,32 @@ def cameLast():
         return False
 
 # SQL Alchemy
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Date, DateTime, Time, BigInteger
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer,\
+     String, Date, DateTime, Time, BigInteger
 from sqlalchemy.sql import func
+from sqlalchemy.orm import sessionmaker
 
-def menu(connection, cursor):
+def OldestFinEmpORM(session, emps):
+    sub_query = session.query(emps.c.dep, func.min(emps.c.birthday)\
+                       .label('emp_old'))\
+                       .filter(emps.c.dep == 'Бухгалтерия')\
+                       .group_by(emps.c.dep)\
+                       .subquery()
+    main_query = session.query(emps.c.id, emps.c.fio, emps.c.birthday,
+                               emps.c.dep, sub_query.c.emp_old)\
+                        .join(sub_query, emps.c.birthday == sub_query.c.emp_old 
+                        and emps.c.dep == sub_query.c.dep)
+    if not main_query.all():
+        return False
+    for res in main_query.all():
+        print(res)
+    print()
+    return True
+
+# Interface
+def menu(connection, cursor, session, emps, ctrl):
     option = int(input())
-    if option > 4 or option < 0:
+    if option > 6 or option < 0:
         print("Wrong option\n")
         return True
     if not option:
@@ -120,7 +141,7 @@ def menu(connection, cursor):
             return False
         return state
     elif option == 4:
-        # state = 
+        state = OldestFinEmpORM(session, emps)
         if not state:
             print("Smth went wrong")
             return False
@@ -165,7 +186,7 @@ if __name__ == '__main__':
         Column('dep', String) 
     )
     # Start session
-    from sqlalchemy.orm import sessionmaker
+    
     Session = sessionmaker(bind = engine)
     session = Session()
     if connect != None:
@@ -179,4 +200,4 @@ if __name__ == '__main__':
             print("4 -- Olders fin dep employee orm realization")
             print("5 -- Employees who left > 3 times orm realization")
             print("6 -- Employee who came last today orm realization")
-            state = menu(connect, cursor)
+            state = menu(connect, cursor, session, emps, ctrl)
