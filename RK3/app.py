@@ -121,6 +121,18 @@ def exitMoreThanThreeTimesORM(session, emps, ctrl):
     print()
     return True
 
+def cameLastORM(session, emps, ctrl):
+    sub_query = session.query(ctrl.c.emp, ctrl.c.sdate, func.min(ctrl.c.stime).label('time_first_entry')) \
+                   .filter(ctrl.c.typ == 1 and ctrl.c.typ == '2020-12-19') \
+                   .group_by(ctrl.c.emp, ctrl.c.sdate).subquery()
+    main_query = session.query(emps.c.id, emps.c.fio, sub_query.c.sdate, sub_query.c.time_first_entry).join(sub_query, emps.c.id == sub_query.c.emp).order_by(sub_query.c.time_first_entry.desc()).first()
+    if not main_query.all():
+        return False
+    for res in main_query.all():
+        print(res)
+    print()
+    return True
+
 # Interface
 def menu(connection, cursor, session, emps, ctrl):
     option = int(input())
@@ -163,7 +175,7 @@ def menu(connection, cursor, session, emps, ctrl):
             print("Smth went wrong")
         return state
     elif option == 6:
-        # state = 
+        state = cameLastORM(session, emps, ctrl)
         if not state:
             print("Smth went wrong")
         return state
@@ -195,7 +207,6 @@ if __name__ == '__main__':
         Column('dep', String) 
     )
     # Start session
-    
     Session = sessionmaker(bind = engine)
     session = Session()
     if connect != None:
