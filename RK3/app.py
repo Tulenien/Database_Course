@@ -107,7 +107,19 @@ def OldestFinEmpORM(session, emps):
     print()
     return True
 
-
+def exitMoreThanThreeTimesORM(session, emps, ctrl):
+    sub_query = session.query(ctrl.c.emp, ctrl.c.sdate, func.count('*').label('out_count')) \
+                   .filter(ctrl.c.typ == 2 and ctrl.c.typ == '2020-12-19') \
+                   .group_by(ctrl.c.emp, ctrl.c.sdate).having(func.count('*') > 0) \
+                   .subquery()
+    main_query = session.query(emps.c.id, emps.c.fio, sub_query.c.out_count) \
+                        .join(sub_query, emps.c.id == sub_query.c.emp)
+    if not main_query.all():
+        return False
+    for res in main_query.all():
+        print(res)
+    print()
+    return True
 
 # Interface
 def menu(connection, cursor, session, emps, ctrl):
@@ -146,7 +158,7 @@ def menu(connection, cursor, session, emps, ctrl):
             print("Smth went wrong")
         return state
     elif option == 5:
-        # state = 
+        state = exitMoreThanThreeTimesORM(session, emps, ctrl)
         if not state:
             print("Smth went wrong")
         return state
