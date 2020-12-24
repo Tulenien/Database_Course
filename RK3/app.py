@@ -126,10 +126,9 @@ def cameLastORM(session, emps, ctrl):
                    .filter(ctrl.c.typ == 1 and ctrl.c.typ == '2020-12-19') \
                    .group_by(ctrl.c.emp, ctrl.c.sdate).subquery()
     main_query = session.query(emps.c.id, emps.c.fio, sub_query.c.sdate, sub_query.c.time_first_entry).join(sub_query, emps.c.id == sub_query.c.emp).order_by(sub_query.c.time_first_entry.desc()).first()
-    if not main_query.all():
+    if not main_query:
         return False
-    for res in main_query.all():
-        print(res)
+    print(main_query)
     print()
     return True
 
