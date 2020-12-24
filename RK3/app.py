@@ -164,6 +164,10 @@ if __name__ == '__main__':
         Column('birthday', Date),
         Column('dep', String) 
     )
+    # Start session
+    from sqlalchemy.orm import sessionmaker
+    Session = sessionmaker(bind = engine)
+    session = Session()
     if connect != None:
         cursor = getCursor(connect)
         state = True
