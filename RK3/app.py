@@ -86,7 +86,7 @@ def cameLast():
 
 # SQL Alchemy
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer,\
-     String, Date, DateTime, Time, BigInteger
+                       String, Date, DateTime, Time, BigInteger
 from sqlalchemy.sql import func
 from sqlalchemy.orm import sessionmaker
 
@@ -107,22 +107,24 @@ def OldestFinEmpORM(session, emps):
     print()
     return True
 
+
+
 # Interface
 def menu(connection, cursor, session, emps, ctrl):
     option = int(input())
     if option > 6 or option < 0:
         print("Wrong option\n")
         return True
-    if not option:
+    elif not option:
         cursor.close()
         connection.close()
-    if option == 1:
+        return False
+    elif option == 1:
         state = OldestFinEmp()
         if not state:
             print("Smth went wrong")
             cursor.close()
             connection.rollback()
-            return False
         return state
     elif option == 2:
         state = exitMoreThanThreeTimes()
@@ -130,7 +132,6 @@ def menu(connection, cursor, session, emps, ctrl):
             print("Smth went wrong")
             cursor.close()
             connection.rollback()
-            return False
         return state
     elif option == 3:
         state = cameLast()
@@ -138,25 +139,21 @@ def menu(connection, cursor, session, emps, ctrl):
             print("Smth went wrong")
             cursor.close()
             connection.rollback()
-            return False
         return state
     elif option == 4:
         state = OldestFinEmpORM(session, emps)
         if not state:
             print("Smth went wrong")
-            return False
         return state
     elif option == 5:
         # state = 
         if not state:
             print("Smth went wrong")
-            return False
         return state
     elif option == 6:
         # state = 
         if not state:
             print("Smth went wrong")
-            return False
         return state
 
 if __name__ == '__main__':
